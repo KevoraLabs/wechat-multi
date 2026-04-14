@@ -19,6 +19,7 @@ targets:
       - path: Resources
     settings:
       base:
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         PRODUCT_NAME: WeChatMulti
         INFOPLIST_FILE: Sources/WeChatMulti/Info.plist
     scheme:

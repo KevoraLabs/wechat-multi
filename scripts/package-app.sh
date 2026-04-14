@@ -7,6 +7,7 @@ PROJECT_FILE="$PROJECT_DIR/project.pbxproj"
 SCHEME="WeChatMulti"
 BUILD_STAMP="$(date +%Y%m%d-%H%M%S)"
 DERIVED_DATA_PATH="$ROOT_DIR/.build/package/$BUILD_STAMP/DerivedData"
+STAGING_DIR="$ROOT_DIR/.build/package/$BUILD_STAMP/DMG"
 APP_PATH="$DERIVED_DATA_PATH/Build/Products/Release/$SCHEME.app"
 DIST_DIR="$ROOT_DIR/dist"
 PACKAGE_FILENAME="${PACKAGE_FILENAME:-}"
@@ -39,6 +40,8 @@ main() {
 
   ensure_project
   mkdir -p "$DIST_DIR"
+  rm -rf "$STAGING_DIR"
+  mkdir -p "$STAGING_DIR"
 
   xcodebuild \
     -project "$PROJECT_DIR" \
@@ -68,10 +71,17 @@ main() {
   fi
   package_path="$DIST_DIR/$package_name"
 
+  cp -R "$APP_PATH" "$STAGING_DIR/$SCHEME.app"
+  osascript <<EOF >/dev/null
+tell application "Finder"
+  make new alias file at POSIX file "$STAGING_DIR" to POSIX file "/Applications"
+end tell
+EOF
+
   rm -f "$package_path"
   hdiutil create \
     -volname "$SCHEME" \
-    -srcfolder "$APP_PATH" \
+    -srcfolder "$STAGING_DIR" \
     -ov \
     -format UDZO \
     "$package_path" >/dev/null

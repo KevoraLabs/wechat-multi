@@ -31,7 +31,7 @@ version=""
 sha256=""
 url=""
 app_name="WeChatMulti"
-desc="Menu bar app for launching multiple WeChat instances on macOS"
+desc="Launch multiple WeChat instances on macOS"
 homepage="https://github.com/KevoraLabs/wechat-multi"
 
 while [[ $# -gt 0 ]]; do

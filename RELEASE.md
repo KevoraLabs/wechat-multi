@@ -13,14 +13,14 @@ git commit -m "Add tag-driven release automation"
 git push origin main
 ```
 
-如果后续要启用 Homebrew tap 全自动更新，再去 GitHub 配置 Actions secret：
+如果要让 release 自动同步 Homebrew tap，需要先配置 Actions secret：
 
 1. 打开 `KevoraLabs/wechat-multi`
 2. 进入 `Settings > Secrets and variables > Actions`
 3. 新建 secret：`HOMEBREW_TAP_TOKEN`
 4. 这个 token 需要能访问 `KevoraLabs/homebrew-tap`，并具备提交代码和创建 PR 的权限
 
-当前第一版 workflow 还不会自动改 tap；这个 secret 留给第二阶段接入。
+现在 workflow 会在 secret 存在时自动更新 `KevoraLabs/homebrew-tap`。
 
 ## 每次发版
 
@@ -69,7 +69,8 @@ git push origin v0.1.1
 4. 打包为 `wechat-multi-版本号.dmg`
 5. 计算安装包 `sha256`
 6. 创建 GitHub Release 并上传 DMG
-7. 输出可用于 Homebrew cask 的版本号、下载地址和 `sha256`
+7. 在 workflow Summary 输出可用于 Homebrew cask 的版本号、下载地址和 `sha256`
+8. 如果配置了 `HOMEBREW_TAP_TOKEN`，自动更新 `KevoraLabs/homebrew-tap/Casks/wechat-multi.rb`
 
 ## 两种发布模式
 
@@ -79,14 +80,15 @@ git push origin v0.1.1
 
 - GitHub Release 自动完成
 - 你手动更新 `homebrew-tap` 的 cask
+- workflow Summary 里会直接给出 `version`、下载地址和 `sha256`
 
-### 第二阶段
+### 全自动
 
-等第一版 release workflow 跑通后，再把 `KevoraLabs/homebrew-tap` 自动更新接上：
+配置 `HOMEBREW_TAP_TOKEN` 后，workflow 会：
 
 - checkout `KevoraLabs/homebrew-tap`
 - 更新 `Casks/wechat-multi.rb`
-- 自动创建 PR
+- 直接提交并推送到 `main`
 
 ## 手动更新 Homebrew tap
 

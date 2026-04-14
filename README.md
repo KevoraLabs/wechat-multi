@@ -77,15 +77,20 @@ git push origin v0.1.0
 - 打包成 GitHub Release 资产 `wechat-multi-版本号.dmg`
 - 创建 GitHub Release 并上传 DMG
 - 计算 SHA256
+- 如果配置了 `HOMEBREW_TAP_TOKEN`，自动更新 `KevoraLabs/homebrew-tap` 的 `Casks/wechat-multi.rb`
 
 ### 半自动
 
-默认就是半自动：
+没有配置 `HOMEBREW_TAP_TOKEN` 时：
 
 - release 会自动生成
 - Homebrew tap 不会自动改
-- 你可以从 workflow 日志或 release 资产拿到 `sha256`，手动更新 tap
+- 你可以从 workflow Summary 里直接拿到 `version`、DMG 地址和 `sha256`，手动更新 tap
 
 ### 全自动
 
-建议先让自动 release 跑通，再在第二阶段接入 `KevoraLabs/homebrew-tap` 自动更新。
+配置了 `HOMEBREW_TAP_TOKEN` 后：
+
+- release 会自动生成
+- workflow 会自动提交 `KevoraLabs/homebrew-tap/Casks/wechat-multi.rb`
+- cask 会自动同步新的 `version`、下载地址和 `sha256`
