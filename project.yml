@@ -2,13 +2,14 @@ name: WeChatMulti
 options:
   minimumXcodeGenVersion: 2.38.0
   createIntermediateGroups: true
+  projectFormat: xcode15_3
 settings:
   base:
     PRODUCT_BUNDLE_IDENTIFIER: com.kevinxft.wechatmulti
     MACOSX_DEPLOYMENT_TARGET: 13.0
     SWIFT_VERSION: 5.9
-    MARKETING_VERSION: 0.1.2
-    CURRENT_PROJECT_VERSION: 3
+    MARKETING_VERSION: 0.1.3
+    CURRENT_PROJECT_VERSION: 4
 targets:
   WeChatMulti:
     type: application
