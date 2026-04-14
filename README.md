@@ -30,3 +30,16 @@ open WeChatMulti.xcodeproj
 ```
 
 然后在 Xcode 里直接 `Run`。
+
+## 打包发布包
+
+```bash
+./scripts/package-app.sh
+```
+
+脚本会：
+
+- 在缺少工程文件时自动执行 `xcodegen generate`
+- 构建 `Release` 版本
+- 输出 `dist/WeChatMulti-版本号-构建号.zip`
+- 打印对应的 SHA256，后续可直接填到 Homebrew cask
