@@ -27,7 +27,7 @@ jobs:
       - name: Build release package
         id: package
         env:
-          PACKAGE_FILENAME: wechat-multi-${{ steps.vars.outputs.version }}.zip
+          PACKAGE_FILENAME: wechat-multi-${{ steps.vars.outputs.version }}.dmg
           METADATA_FILE: ${{ runner.temp }}/package.env
         run: |
           chmod +x scripts/package-app.sh scripts/update-homebrew-cask.sh
@@ -46,4 +46,4 @@ jobs:
         with:
           name: ${{ github.ref_name }}
           generate_release_notes: true
-          files: ${{ steps.package.outputs.ZIP_PATH }}
+          files: ${{ steps.package.outputs.PACKAGE_PATH }}

@@ -66,9 +66,9 @@ git push origin v0.1.1
 1. checkout 当前仓库
 2. 安装 `xcodegen`
 3. 构建 Release 版 `.app`
-4. 打包为 `wechat-multi-版本号.zip`
+4. 打包为 `wechat-multi-版本号.dmg`
 5. 计算安装包 `sha256`
-6. 创建 GitHub Release 并上传 zip
+6. 创建 GitHub Release 并上传 DMG
 7. 输出可用于 Homebrew cask 的版本号、下载地址和 `sha256`
 
 ## 两种发布模式
@@ -105,5 +105,5 @@ git push origin v0.1.1
   --cask-file /path/to/homebrew-tap/Casks/wechat-multi.rb \
   --version 0.1.1 \
   --sha256 <sha256> \
-  --url https://github.com/KevoraLabs/wechat-multi/releases/download/v0.1.1/wechat-multi-0.1.1.zip
+  --url https://github.com/KevoraLabs/wechat-multi/releases/download/v0.1.1/wechat-multi-0.1.1.dmg
 ```

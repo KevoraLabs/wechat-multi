@@ -33,7 +33,7 @@ ensure_project() {
 
 main() {
   require_command xcodebuild
-  require_command ditto
+  require_command hdiutil
   require_command shasum
   require_command /usr/libexec/PlistBuddy
 
@@ -55,21 +55,27 @@ main() {
 
   local version
   local build_number
-  local zip_name
-  local zip_path
+  local package_name
+  local package_path
   local checksum
 
   version="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$APP_PATH/Contents/Info.plist")"
   build_number="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$APP_PATH/Contents/Info.plist")"
   if [[ -n "$PACKAGE_FILENAME" ]]; then
-    zip_name="$PACKAGE_FILENAME"
+    package_name="$PACKAGE_FILENAME"
   else
-    zip_name="${SCHEME}-${version}-${build_number}.zip"
+    package_name="${SCHEME}-${version}-${build_number}.dmg"
   fi
-  zip_path="$DIST_DIR/$zip_name"
+  package_path="$DIST_DIR/$package_name"
 
-  ditto -c -k --sequesterRsrc --keepParent "$APP_PATH" "$zip_path"
-  checksum="$(shasum -a 256 "$zip_path" | awk '{print $1}')"
+  rm -f "$package_path"
+  hdiutil create \
+    -volname "$SCHEME" \
+    -srcfolder "$APP_PATH" \
+    -ov \
+    -format UDZO \
+    "$package_path" >/dev/null
+  checksum="$(shasum -a 256 "$package_path" | awk '{print $1}')"
 
   if [[ -n "$METADATA_FILE" ]]; then
     mkdir -p "$(dirname "$METADATA_FILE")"
@@ -77,15 +83,15 @@ main() {
 APP_PATH=$APP_PATH
 APP_VERSION=$version
 BUILD_NUMBER=$build_number
-ZIP_NAME=$zip_name
-ZIP_PATH=$zip_path
+PACKAGE_NAME=$package_name
+PACKAGE_PATH=$package_path
 SHA256=$checksum
 EOF
   fi
 
   cat <<EOF
 Created package:
-  $zip_path
+  $package_path
 
 SHA256:
   $checksum
