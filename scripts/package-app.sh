@@ -9,6 +9,8 @@ BUILD_STAMP="$(date +%Y%m%d-%H%M%S)"
 DERIVED_DATA_PATH="$ROOT_DIR/.build/package/$BUILD_STAMP/DerivedData"
 APP_PATH="$DERIVED_DATA_PATH/Build/Products/Release/$SCHEME.app"
 DIST_DIR="$ROOT_DIR/dist"
+PACKAGE_FILENAME="${PACKAGE_FILENAME:-}"
+METADATA_FILE="${METADATA_FILE:-}"
 
 require_command() {
   if ! command -v "$1" >/dev/null 2>&1; then
@@ -59,11 +61,27 @@ main() {
 
   version="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$APP_PATH/Contents/Info.plist")"
   build_number="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$APP_PATH/Contents/Info.plist")"
-  zip_name="${SCHEME}-${version}-${build_number}.zip"
+  if [[ -n "$PACKAGE_FILENAME" ]]; then
+    zip_name="$PACKAGE_FILENAME"
+  else
+    zip_name="${SCHEME}-${version}-${build_number}.zip"
+  fi
   zip_path="$DIST_DIR/$zip_name"
 
   ditto -c -k --sequesterRsrc --keepParent "$APP_PATH" "$zip_path"
   checksum="$(shasum -a 256 "$zip_path" | awk '{print $1}')"
+
+  if [[ -n "$METADATA_FILE" ]]; then
+    mkdir -p "$(dirname "$METADATA_FILE")"
+    cat >"$METADATA_FILE" <<EOF
+APP_PATH=$APP_PATH
+APP_VERSION=$version
+BUILD_NUMBER=$build_number
+ZIP_NAME=$zip_name
+ZIP_PATH=$zip_path
+SHA256=$checksum
+EOF
+  fi
 
   cat <<EOF
 Created package:

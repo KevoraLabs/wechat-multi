@@ -43,3 +43,35 @@ open WeChatMulti.xcodeproj
 - 构建 `Release` 版本
 - 输出 `dist/WeChatMulti-版本号-构建号.zip`
 - 打印对应的 SHA256，后续可直接填到 Homebrew cask
+
+## GitHub Actions 发版
+
+自动化放在 `wechat-multi` 仓库本身，通过推 tag 发版：
+
+完整步骤见 [RELEASE.md](/Users/kevin/Developer/Code/wechat-multi/RELEASE.md:1)。
+
+```bash
+git tag v0.1.0
+git push origin v0.1.0
+```
+
+这里的 tag 去掉前缀 `v` 后，必须和 `project.yml` 里的 `MARKETING_VERSION` 一致；workflow 会做这个校验，不一致就直接失败。
+
+`/.github/workflows/release.yml` 会自动执行这条链路：
+
+- 构建 `.app`
+- 打包成 GitHub Release 资产 `wechat-multi-版本号.zip`
+- 创建 GitHub Release 并上传安装包
+- 计算 SHA256
+
+### 半自动
+
+默认就是半自动：
+
+- release 会自动生成
+- Homebrew tap 不会自动改
+- 你可以从 workflow 日志或 release 资产拿到 `sha256`，手动更新 tap
+
+### 全自动
+
+建议先让自动 release 跑通，再在第二阶段接入 `KevoraLabs/homebrew-tap` 自动更新。
